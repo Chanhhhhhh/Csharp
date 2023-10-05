@@ -31,14 +31,8 @@ namespace Csharp
         public void delete(int value) // value (giá trị cần xóa trong list)
         {
             List<int> list = new List<int>() { 1, 2, 3, 4, 5, 4, 4, 6, 8, 9, 10 };
-            for (int i = 0; i < list.Count; i++)
-            {
-                if (list.Contains(value))
-                    list.Remove(value);
-                else
-                    break;
-            }
 
+            list.RemoveAll(x => x == value); 
             foreach (int i in list)
             {
                 Console.Write(i + "   ");
@@ -51,12 +45,12 @@ namespace Csharp
         public void LongestIncreasing()
         {
             List<int> list = new List<int>() { 1, 2, 3, 4, 5, 4, 4, 6, 8, 9, 10 };
-            int[] index = new int[list.Count]; // lưu vị trí đầu tiên của chuỗi con có độ dài dài nhất
+            int[] index = new int[list.Count]; // lưu các vị trí đầu tiên của chuỗi con có độ dài dài nhất
 
             int res = 0, CountLength = 1, CountList = 0;
-            // res (độ dài chuỗi lớn nhất : tạm thời)
-            // CountLength ( lưu độ dài chuỗi lớn nhất : tăng dần)
-            // CountList (lưu số chuỗi con tăng dần có độ dài lớn nhất)
+            // res (độ dài chuỗi lớn nhất)
+            // CountLength (đếm độ dài chuỗi tăng dần)
+            // CountList (lưu số lượng chuỗi con tăng dần có độ dài lớn nhất)
 
 
             for (int i = 1; i < list.Count; i++)
@@ -92,15 +86,16 @@ namespace Csharp
         // bai 4
         public bool CheckPointIsInLine(Vector2 point, Vector2 a, Vector2 b)
         {
+            Vector2 a_b = b - a;
+            Vector2 a_point = point -a;
 
-            Vector2 ab = new Vector2(b.X - a.X, b.Y - a.Y);
-            Vector2 aPoint = new Vector2(point.X - a.X, point.Y - a.Y);
+            // kiểm tra  cùng phương 
+            double key = a_b.X * a_point.Y - a_b.Y * a_point.X;
+            // kiểm tra cùng hướng
+            double dotProduct = a_b.X * a_point.X + a_b.Y * a_point.Y;
 
-            double key = (ab.X * aPoint.Y) - (ab.Y * aPoint.X); // kiem tra 2 vector ab va aPoint co cùng phương khong
-            if (key == 0)
-                return true;
-            else
-                return false;
+            return dotProduct >=0 && key == 0 && a_point.LenghtSquare() <= a_b.LenghtSquare();
+
         }
 
 
@@ -148,9 +143,22 @@ namespace Csharp
             X = a;
             Y = b;
         }
+
+        public double LenghtSquare()
+        {
+            return X * X + Y * Y;
+        }
+
+
+        public static Vector2 operator -(Vector2 v1, Vector2 v2)
+        {
+            return new Vector2(v1.X - v2.X, v1.Y - v2.Y);
+        }
+
+
     }
 
-    internal class Program
+internal class Program
     {
         static void Main(string[] args)
         {
@@ -158,7 +166,7 @@ namespace Csharp
             test.find();
             test.delete(4);
             test.LongestIncreasing();
-            Console.WriteLine(test.CheckPointIsInLine(new Vector2(1, 1), new Vector2(0, 2), new Vector2(2, 0)));
+            Console.WriteLine(test.CheckPointIsInLine(new Vector2(2,0), new Vector2(0, 2), new Vector2(2, 0)));
             Console.WriteLine(test.CheckPointIsInLine(new Vector2(0,0), new Vector2(0, 2), new Vector2(2, 0)));
 
              foreach(int i in test.GetLish(10))
